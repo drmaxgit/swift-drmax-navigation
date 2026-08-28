@@ -27,9 +27,9 @@ import SwiftUI
 /// ```
 @Observable
 public class RootNavigationController<Screen: Hashable>: Identifiable {
-    private(set) var root: Screen?
-    var path: [Screen]
-    var presentation: Presentation<Screen>?
+    public private(set) var root: Screen?
+    public var path: [Screen]
+    public internal(set) var presentation: Presentation<Screen>?
 
     /// Creates a new navigation controller.
     /// - Parameters:

@@ -11,7 +11,8 @@
 // ===----------------------------------------------------------------------===//
 
 extension RootNavigationController {
-    var sheet: PresentedNavigationController<Screen>? {
+    @_spi(Internal)
+    public var sheet: PresentedNavigationController<Screen>? {
         get {
             if case let .sheet(controller) = presentation {
                 return controller
@@ -29,7 +30,8 @@ extension RootNavigationController {
     }
 
     #if !os(macOS)
-    var cover: PresentedNavigationController<Screen>? {
+    @_spi(Internal)
+    public var cover: PresentedNavigationController<Screen>? {
         get {
             if case let .cover(controller) = presentation {
                 return controller
@@ -48,7 +50,8 @@ extension RootNavigationController {
     #endif
 
     #if !os(watchOS)
-    var popover: PresentedNavigationController<Screen>? {
+    @_spi(Internal)
+    public var popover: PresentedNavigationController<Screen>? {
         get {
             if case let .popover(controller) = presentation {
                 return controller

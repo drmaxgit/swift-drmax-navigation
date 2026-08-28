@@ -11,7 +11,6 @@
 // ===----------------------------------------------------------------------===//
 
 /// Represents an active presentation in the navigation tree.
-@_spi(Testing)
 public enum Presentation<Screen: Hashable> {
     case sheet(PresentedNavigationController<Screen>)
 
