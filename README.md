@@ -166,3 +166,13 @@ Same goes for dismissing, where all you need to do is call the `pop{Before/To}` 
 The library provides a `NavigationStyle` enum encapsulating all the styles of navigation supported. The style are `push`, `sheet`, `cover` and `popover`.
 
 Notice the missing `alert` style. That is intended ', because presenting alerts is often a UI/UX functionality and not a proper navigation, so it is left to be handled by the View/model alone.
+
+## Examples
+
+The `Examples` directory contains the same demo running as two apps, showing push/sheet/popover/cover, composing independent "feature" modules via `pullback(on:)`, and pop/popToRoot/popBefore/popTo:
+
+- `Examples/DrMaxNavigationDemoCore` — a plain Swift package with all the screens, coordinators and views. Both apps below depend on it; there's nothing platform-specific to run here directly.
+- `Examples/DrMaxNavigationDemo.swiftpm` — an iOS app wrapping the demo. Open it in Xcode and run it on a simulator or device.
+
+  Note: despite the `.swiftpm` extension (the same format Xcode uses to run Swift packages directly), this does **not** open in Apple's separate Swift Playgrounds app — that app bundles its own older Swift toolchain, incompatible with this package's `swift-tools-version`.
+- `Examples/DrMaxNavigationDemoMac` — a native macOS app wrapping the same demo (no full screen cover, since that style doesn't exist on macOS). Run it with `swift run` from that directory.
