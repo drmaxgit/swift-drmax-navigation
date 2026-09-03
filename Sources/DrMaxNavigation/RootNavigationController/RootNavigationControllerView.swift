@@ -45,6 +45,7 @@ public struct RootNavigationControllerView<
             root
                 .navigationDestination(for: NavigationElement<Screen>.self) {
                     screen($0.wrapped)
+                        .pushDestinationFrame()
                 }
         }
         .sheet(item: $controller.sheet) { controller in
@@ -88,7 +89,24 @@ private extension View {
             .interactiveDismissDisabled(!dismissable)
             .conditionalPresentationBackground()
     }
-    
+
+    /// Forces pushed content to fill the navigation stack and paints an opaque background behind it.
+    ///
+    /// On macOS, `NavigationStack` sizes a `navigationDestination` to its ideal size and doesn't opaquely
+    /// cover the view it replaced, so a destination that doesn't already fill and paint its own background
+    /// (e.g. a plain `VStack`) renders small, centered, and see-through over the previous screen. iOS doesn't
+    /// need this: `UINavigationController` already gives every pushed view the full, opaque content area.
+    @ViewBuilder
+    func pushDestinationFrame() -> some View {
+        #if os(macOS)
+        self
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.background)
+        #else
+        self
+        #endif
+    }
+
     @ViewBuilder
     func conditionalPresentationBackground() -> some View {
         if #available(iOS 18.0, *) {
