@@ -14,8 +14,6 @@
 public extension RootNavigationController {
     /// The current navigation path. Available for testing purposes only.
     var testPath: [NavigationElement<Screen>] { path }
-    /// The root screen. Available for testing purposes only.
-    var testRoot: NavigationElement<Screen>? { root }
     /// The current active presentation. Available for testing purposes only.
     var testPresentation: Presentation<Screen>? { presentation }
 }

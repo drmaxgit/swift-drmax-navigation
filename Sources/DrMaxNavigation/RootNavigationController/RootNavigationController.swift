@@ -27,20 +27,10 @@ import SwiftUI
 /// ```
 @Observable
 public class RootNavigationController<Screen: Hashable>: Identifiable {
-    public private(set) var root: NavigationElement<Screen>?
     public var path: [NavigationElement<Screen>]
     public internal(set) var presentation: Presentation<Screen>?
 
-    
-    init(
-        root: Screen? = nil,
-        path: [Screen] = [],
-        rootSetWithAnimation: Bool
-    ) {
-        if let root {
-            self.root = NavigationElement(wrapped: root, wasNavigatedWithAnimation: rootSetWithAnimation)
-        }
-        
+    public init(path: [Screen] = []) {
         self.path = path.map { NavigationElement(wrapped: $0, wasNavigatedWithAnimation: true) }
     }
 
@@ -54,14 +44,6 @@ public class RootNavigationController<Screen: Hashable>: Identifiable {
         }
 
         return self
-    }
-
-    /// Sets the root screen of the controller.
-    /// - Parameter screen: The screen to set as root.
-    /// - Note: This can only be called once, typically if the controller was initialized without a root.
-    public func set(root screen: Screen) {
-        precondition(self.root == nil)
-        self.root = NavigationElement(wrapped: screen, wasNavigatedWithAnimation: false)
     }
 }
 
@@ -98,7 +80,7 @@ public extension RootNavigationController {
         let animated: Bool
         
         if index == controller.path.indices.last {
-            animated = controller.presentation?.controller.root?.wasNavigatedWithAnimation ?? true
+            animated = controller.presentation?.controller.root.wasNavigatedWithAnimation ?? true
         } else if controller.path.indices.contains(poppedElementIndex) {
             animated = controller.path[poppedElementIndex].wasNavigatedWithAnimation
         } else {
@@ -125,7 +107,7 @@ public extension RootNavigationController {
             return
         }
         
-        let animated = presentation.controller.root?.wasNavigatedWithAnimation ?? true
+        let animated = presentation.controller.root.wasNavigatedWithAnimation
         
         Transaction.conditionalyDisableAnimations(animated: animated) {
             controller.presentation = nil
@@ -143,7 +125,7 @@ public extension RootNavigationController {
             return
         }
         
-        let animated = presentation.controller.root?.wasNavigatedWithAnimation ?? true
+        let animated = presentation.controller.root.wasNavigatedWithAnimation
         
         Transaction.conditionalyDisableAnimations(animated: animated) {
             controller.presentation = nil
@@ -214,24 +196,11 @@ public extension RootNavigationController {
             return .index(controller: self, index: index)
         }
 
-        if let presentation, let root = presentation.controller.root, equals(root.wrapped, element) {
+        if let presentation, equals(presentation.controller.root.wrapped, element) {
             return .root(parentController: self)
         }
 
         return presentation?.controller.location(of: element, equals: equals)
-    }
-}
-
-public extension RootNavigationController {
-    /// Creates a new navigation controller.
-    /// - Parameters:
-    ///   - root: The initial screen to display.
-    ///   - path: The initial stack of pushed screens.
-    convenience init(
-        root: Screen? = nil,
-        path: [Screen] = []
-    ) {
-        self.init(root: root, path: path, rootSetWithAnimation: true)
     }
 }
 

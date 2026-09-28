@@ -81,7 +81,7 @@ public extension RootNavigationController {
     ) {
         if let presentation {
             if presentation.controller.path.isEmpty && presentation.controller.presentation == nil {
-                let animated = presentation.controller.root?.wasNavigatedWithAnimation ?? true
+                let animated = presentation.controller.root.wasNavigatedWithAnimation
                 
                 Transaction.conditionalyDisableAnimations(animated: animated) {
                     self.presentation = nil
