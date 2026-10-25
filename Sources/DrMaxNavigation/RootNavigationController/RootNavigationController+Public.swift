@@ -81,7 +81,7 @@ public extension RootNavigationController {
     ) {
         if let presentation {
             if presentation.controller.path.isEmpty && presentation.controller.presentation == nil {
-                let animated = presentation.controller.root?.wasNavigatedWithAnimation ?? true
+                let animated = presentation.controller.root.wasNavigatedWithAnimation
                 
                 Transaction.conditionalyDisableAnimations(animated: animated) {
                     self.presentation = nil
@@ -126,6 +126,9 @@ public extension RootNavigationController {
             from: parentController,
             completion: completion
         )
+        case let .selection(controller): controller.removeSelection(
+            completion: completion
+        )
         case nil: completion()
         }
     }
@@ -149,6 +152,9 @@ public extension RootNavigationController {
         )
         case let .root(parentController): dismiss(
             to: parentController,
+            completion: completion
+        )
+        case let .selection(controller): controller.removeAfterSelection(
             completion: completion
         )
         case nil: completion()

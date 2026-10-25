@@ -5,7 +5,6 @@ struct PlainNavigationControllerDestinationTest {
     @Test
     func pushPropagatesToParent() async throws {
         let parent = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -75,7 +74,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popPropagatesToParentPath() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
 
         let controller = parent.pullback(on: \.child)
         controller.navigate(to: .childOne)
@@ -87,7 +86,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popPropagatesToParentPresentationWhenPresentedPathEmpty() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
 
         let controller = parent.pullback(on: \.child)
         controller.navigate(to: .childOne, style: .sheet)
@@ -101,7 +100,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popPropagatesToParentPresentationWhenPresentedPathNotEmpty() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
 
         let controller = parent.pullback(on: \.child)
         controller.navigate(to: .childOne, style: .sheet)
@@ -117,7 +116,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popPropagatesToParentPresentationWhenPresentedPathSingleElement() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
 
         let controller = parent.pullback(on: \.child)
         controller.navigate(to: .childOne, style: .sheet)
@@ -132,7 +131,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popToRootPropagatesToParent() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         parent.navigate(to: .four)
         parent.navigate(to: .three)
 
@@ -152,7 +151,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popBeforePropagatesToParent() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         parent.navigate(to: .one)
         parent.navigate(to: .two)
 
@@ -170,7 +169,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popToPropagatesToParent() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         parent.navigate(to: .one)
         parent.navigate(to: .two)
 
@@ -188,7 +187,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popToPropagatesToNestedParent() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         parent.navigate(to: .one)
         parent.navigate(to: .two, style: .sheet)
 
@@ -206,7 +205,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popBeforePropagatesToNestedParent() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         parent.navigate(to: .one)
         parent.navigate(to: .two, style: .sheet)
 
@@ -224,7 +223,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popBeforeDismissesPresentedRoot() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
 
         let controller = parent.pullback(on: \.child)
 
@@ -242,7 +241,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popToPullbackRootRemovesFirstChildDestinationAndEverythingAfter() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         parent.navigate(to: .two)
 
         let controller = parent.pullback(on: \.child)
@@ -260,7 +259,7 @@ struct PlainNavigationControllerDestinationTest {
 
     @Test
     func popToPullbackRootDismissesPresentedChildRoot() async throws {
-        let parent = RootNavigationController<Destination>(root: .one)
+        let parent = RootNavigationController<Destination>()
         let controller = parent.pullback(on: \.child)
 
         controller.navigate(to: .childOne, style: .sheet)
@@ -282,7 +281,6 @@ struct PlainNavigationControllerDestinationTest {
     @Test
     func popToPullbackRootDoesNothingWhenChildDestinationIsMissing() async throws {
         let parent = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
         let controller = parent.pullback(on: \.child)
@@ -295,7 +293,6 @@ struct PlainNavigationControllerDestinationTest {
     @Test
     func navigateCorrectlyDisallowsNesting() {
         let parent = RootNavigationController<Destination>(
-            root: .one,
             path: [.one, .child(.childOne), .two, .three, .child(.childTwo)]
         )
         

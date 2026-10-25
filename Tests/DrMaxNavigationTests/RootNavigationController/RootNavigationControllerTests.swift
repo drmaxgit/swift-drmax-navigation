@@ -5,19 +5,9 @@ import Testing
 @Suite("Plain Destination tests")
 struct PlainDestinationTests {
     @Test
-    func completePathShouldNotContainRootControllerRoot() {
-        let controller = RootNavigationController<Destination>()
-        controller.set(root: .one)
-        controller.navigate(to: .two)
-
-        #expect(controller.completePath == [.two].asNavigationElements())
-    }
-
-    @Test
     func completePathShouldReflectPresentedDestinations() {
         let controller = RootNavigationController<Destination>()
 
-        controller.set(root: .one)
         controller.navigate(to: .two)
         controller.navigate(to: .three, style: .sheet)
         controller.navigate(to: .four)
@@ -26,22 +16,8 @@ struct PlainDestinationTests {
     }
 
     @Test
-    func setRootShouldSetFirstRoot() {
-        let controller = RootNavigationController<Destination>()
-        #expect(controller.root == nil)
-        controller.set(root: .two)
-        #expect(
-            controller.root == NavigationElement(
-                wrapped: .two,
-                wasNavigatedWithAnimation: false
-            )
-        )
-    }
-
-    @Test
     func navigatingOnPresentingControllerPresentsOnTopMostController() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.one, .two]
         )
 
@@ -60,7 +36,6 @@ struct PlainDestinationTests {
     @Test
     func popOnPresentingControllerPopsFromTopMostController() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.one, .two]
         )
 
@@ -94,7 +69,7 @@ struct PlainDestinationTests {
 
     @Test
     func presentingSheetPresentsSheet() {
-        let controller = RootNavigationController<Destination>(root: .one)
+        let controller = RootNavigationController<Destination>()
         controller.navigate(to: .two, style: .sheet)
 
         let stateCorrect = switch controller.presentation {
@@ -123,7 +98,7 @@ struct PlainDestinationTests {
     #if !os(watchOS)
     @Test
     func presentingPopoverPresentsPopover() {
-        let controller = RootNavigationController<Destination>(root: .one)
+        let controller = RootNavigationController<Destination>()
         controller.navigate(to: .two, style: .popover)
 
         let stateCorrect = switch controller.presentation {
@@ -138,25 +113,17 @@ struct PlainDestinationTests {
     @Test
     func popRemovesLastElementFromFlatController() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
         controller.pop()
 
-        #expect(
-            controller.root == NavigationElement(
-                wrapped: .one,
-                wasNavigatedWithAnimation: true
-            )
-        )
         #expect(controller.path == [.two].asNavigationElements())
     }
 
     @Test
     func popRemovesLastPresentedControllerWhenPresentedPathEmpty() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -168,13 +135,7 @@ struct PlainDestinationTests {
         #expect(controller.presentation != nil)
 
         controller.pop()
-
-        #expect(
-            controller.root == NavigationElement(
-                wrapped: .one,
-                wasNavigatedWithAnimation: true
-            )
-        )
+        
         #expect(controller.path == [.two, .three].asNavigationElements())
         #expect(controller.presentation == nil)
     }
@@ -182,7 +143,6 @@ struct PlainDestinationTests {
     @Test
     func popToRootRemovesAll() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -197,7 +157,6 @@ struct PlainDestinationTests {
     @Test
     func popBeforeRemovesIncludingElement() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -209,7 +168,6 @@ struct PlainDestinationTests {
     @Test
     func popBeforeRemovesPresentationIfRoot() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -224,7 +182,6 @@ struct PlainDestinationTests {
     @Test
     func popBeforeFirstElementRemovescompletePath() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -236,7 +193,6 @@ struct PlainDestinationTests {
     @Test
     func popToLastElementRemovesPresentationAndLastElement() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -253,7 +209,6 @@ struct PlainDestinationTests {
     @Test
     func popToRemovesElementNotIncluding() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -265,7 +220,6 @@ struct PlainDestinationTests {
     @Test
     func popToFirstElementRemovescompletePathAfter() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -277,7 +231,6 @@ struct PlainDestinationTests {
     @Test
     func popToLastElementRemovesPresentation() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -412,7 +365,6 @@ struct CasePathableDestinationTests {
     @Test
     func popBeforeRemovesIncludingElement() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -426,7 +378,6 @@ struct CasePathableDestinationTests {
     @Test
     func popBeforeFirstElementRemovescompletePath() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -438,7 +389,6 @@ struct CasePathableDestinationTests {
     @Test
     func popToLastElementRemovesPresentationAndLastElement() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -455,7 +405,6 @@ struct CasePathableDestinationTests {
     @Test
     func popToRemovesElementNotIncluding() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -467,7 +416,6 @@ struct CasePathableDestinationTests {
     @Test
     func popToFirstElementRemovescompletePathAfter() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three, .four]
         )
 
@@ -479,7 +427,6 @@ struct CasePathableDestinationTests {
     @Test
     func popToLastElementRemovesPresentation() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.two, .three]
         )
 
@@ -496,7 +443,6 @@ struct CasePathableDestinationTests {
     @Test
     func navigateCorrectlyDisallowsNesting() {
         let controller = RootNavigationController<Destination>(
-            root: .one,
             path: [.one, .two, .three, .two]
         )
         

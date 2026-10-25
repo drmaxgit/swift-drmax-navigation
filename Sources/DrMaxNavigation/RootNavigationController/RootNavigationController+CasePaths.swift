@@ -34,6 +34,9 @@ extension RootNavigationController where Screen: CasePathable {
             from: controller,
             completion: completion
         )
+        case let .selection(controller): controller.removeSelection(
+            completion: completion
+        )
         case nil: completion()
         }
     }
@@ -56,6 +59,9 @@ extension RootNavigationController where Screen: CasePathable {
         )
         case let .root(controller): dismiss(
             to: controller,
+            completion: completion
+        )
+        case let .selection(controller): controller.removeAfterSelection(
             completion: completion
         )
         case nil: completion()

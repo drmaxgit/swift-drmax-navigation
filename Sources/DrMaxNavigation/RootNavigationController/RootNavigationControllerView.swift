@@ -26,59 +26,95 @@ import SwiftUI
 /// }
 /// ```
 public struct RootNavigationControllerView<
+    RootView: View,
     Screen: Hashable,
     ScreenView: View
 >: View {
     @Bindable var controller: RootNavigationController<Screen>
+    let root: () -> RootView
     let screen: (Screen) -> ScreenView
 
     public init(
         controller: RootNavigationController<Screen>,
+        @ViewBuilder root: @escaping () -> RootView,
         @ViewBuilder screen: @escaping (Screen) -> ScreenView
     ) {
         self.controller = controller
+        self.root = root
         self.screen = screen
     }
 
     public var body: some View {
         NavigationStack(path: $controller.path) {
-            root
+            root()
                 .navigationDestination(for: NavigationElement<Screen>.self) {
                     screen($0.wrapped)
                 }
         }
-        .sheet(item: $controller.sheet) { controller in
-            RootNavigationControllerView(
-                controller: controller,
-                screen: screen
-            )
-            .presentationModifiers(dismissable: controller.allowsInteractiveDismiss)
-        }
-        #if !os(watchOS)
-        .popover(item: $controller.popover) { controller in
-            RootNavigationControllerView(
-                controller: controller,
-                screen: screen
-            )
-            .presentationModifiers(dismissable: controller.allowsInteractiveDismiss)
-        }
-        #endif
-        #if !os(macOS)
-        .fullScreenCover(item: $controller.cover) { controller in
-            RootNavigationControllerView(
-                controller: controller,
-                screen: screen
-            )
-            .presentationModifiers(dismissable: controller.allowsInteractiveDismiss)
-        }
-        #endif
+        .presentations(of: controller, screen: screen)
     }
+}
 
-    @ViewBuilder
-    private var root: some View {
-        if let root = controller.root?.wrapped {
-            screen(root)
+public struct PresentedNavigationControllerView<
+    Screen: Hashable,
+    ScreenView: View
+>: View {
+    @Bindable var controller: PresentedNavigationController<Screen>
+    let screen: (Screen) -> ScreenView
+    
+    public init(
+        controller: PresentedNavigationController<Screen>,
+        @ViewBuilder screen: @escaping (Screen) -> ScreenView
+    ) {
+        self.controller = controller
+        self.screen = screen
+    }
+    
+    public var body: some View {
+        NavigationStack(path: $controller.path) {
+            screen(controller.root.wrapped)
+                .navigationDestination(for: NavigationElement<Screen>.self) {
+                    screen($0.wrapped)
+                }
         }
+        .presentations(of: controller, screen: screen)
+    }
+}
+
+extension View {
+    /// Attaches the sheet, popover and full-screen cover presentations driven by `controller`.
+    func presentations<Screen: Hashable, ScreenView: View>(
+        of controller: RootNavigationController<Screen>,
+        screen: @escaping (Screen) -> ScreenView
+    ) -> some View {
+        @Bindable var controller = controller
+
+        return self
+            .sheet(item: $controller.sheet) { controller in
+                PresentedNavigationControllerView(
+                    controller: controller,
+                    screen: screen
+                )
+                .presentationModifiers(dismissable: controller.allowsInteractiveDismiss)
+            }
+            #if !os(watchOS)
+            .popover(item: $controller.popover) { controller in
+                PresentedNavigationControllerView(
+                    controller: controller,
+                    screen: screen
+                )
+                .presentationModifiers(dismissable: controller.allowsInteractiveDismiss)
+            }
+            #endif
+            #if !os(macOS)
+            .fullScreenCover(item: $controller.cover) { controller in
+                PresentedNavigationControllerView(
+                    controller: controller,
+                    screen: screen
+                )
+                .presentationModifiers(dismissable: controller.allowsInteractiveDismiss)
+            }
+            #endif
     }
 }
 
