@@ -15,6 +15,13 @@ extension RootNavigationController where Screen: CaseEquatable {
                     completion: completion
                 )
             }
+        } else {
+            navigate(
+                to: screen,
+                style: style,
+                animated: animated,
+                completion: completion
+            )
         }
     }
 }
