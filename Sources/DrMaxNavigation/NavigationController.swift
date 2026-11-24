@@ -33,7 +33,7 @@ import CasePaths
 /// child.navigate(to: .detail(id: "42"))    // pushes AppScreen.dashboard(.detail(id: "42"))
 /// ```
 public struct NavigationController<Parent: Hashable, Child: Hashable> {
-    public let parent: RootNavigationController<Parent>
+    public weak var parent: RootNavigationController<Parent>?
 
     private let casePath: CaseKeyPath<Parent, Child>
 
@@ -60,6 +60,11 @@ public extension NavigationController {
         animated: Bool = true,
         completion: @escaping () -> Void = {}
     ) {
+        guard let parent else {
+            completion()
+            return
+        }
+
         parent.navigate(to: casePath(screen), style: style, animated: animated, completion: completion)
     }
 
@@ -70,6 +75,11 @@ public extension NavigationController {
         animated: Bool = true,
         completion: @escaping () -> Void = {}
     ) {
+        guard let parent else {
+            completion()
+            return
+        }
+
         parent.pop(completion: completion)
     }
 
@@ -80,6 +90,11 @@ public extension NavigationController {
         animated: Bool = true,
         completion: @escaping () -> Void = {}
     ) {
+        guard let parent else {
+            completion()
+            return
+        }
+
         parent.popToRoot(animated: animated, completion: completion)
     }
 
@@ -90,6 +105,11 @@ public extension NavigationController {
         animated: Bool = true,
         completion: @escaping () -> Void = {}
     ) {
+        guard let parent else {
+            completion()
+            return
+        }
+
         parent.popToPresentationRoot(
             animated: animated,
             completion: completion
@@ -104,7 +124,7 @@ public extension NavigationController where Child: CasePathable, Parent: CasePat
     func popToPullbackRoot(
         completion: @escaping () -> Void = {}
     ) {
-        if let screen = parent.completePath.compactMap({ $0.wrapped[case: casePath] }).first {
+        if let parent, let screen = parent.completePath.compactMap({ $0.wrapped[case: casePath] }).first {
             parent.popBefore(
                 casePath(screen),
                 completion: completion
@@ -122,7 +142,7 @@ public extension NavigationController where Child: CasePathable, Parent: CasePat
         _ element: PartialCaseKeyPath<Child>,
         completion: @escaping () -> Void = {}
     ) {
-        if let screen = find(element) {
+        if let parent, let screen = find(element) {
             parent.popBefore(
                 casePath(screen),
                 completion: completion
@@ -140,7 +160,7 @@ public extension NavigationController where Child: CasePathable, Parent: CasePat
         _ element: PartialCaseKeyPath<Child>,
         completion: @escaping () -> Void = {}
     ) {
-        if let screen = find(element) {
+        if let parent, let screen = find(element) {
             parent.popTo(
                 casePath(screen),
                 completion: completion
@@ -156,7 +176,7 @@ private extension NavigationController where Child: CasePathable, Parent: CasePa
     func find(
         _ element: PartialCaseKeyPath<Child>
     ) -> Child? {
-        parent
+        parent?
             .completePath
             .compactMap { $0.wrapped[case: casePath] }
             .first { $0.is(element) }
@@ -171,6 +191,11 @@ extension NavigationController where Parent: CaseEquatable {
         allowsSameScreenNesting: Bool = true,
         completion: @escaping () -> Void = {}
     ) {
+        guard let parent else {
+            completion()
+            return
+        }
+
         parent.navigate(
             to: casePath(screen),
             style: style,

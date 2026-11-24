@@ -2,6 +2,8 @@
 import Testing
 
 struct NavigationControllerCompletionTests {
+    private let parent = RootNavigationController<Destination>()
+
     @Test
     func invokedWhenPushing() async {
         let controller = controller()
@@ -230,6 +232,6 @@ struct NavigationControllerCompletionTests {
     #endif
     
     private func controller() -> NavigationController<Destination, ChildDestination> {
-        RootNavigationController().pullback(on: \.child)
+        parent.pullback(on: \.child)
     }
 }

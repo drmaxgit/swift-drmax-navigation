@@ -505,4 +505,22 @@ struct CasePathableDestinationTests {
             #expect(controller.presentation == nil)
         }
     }
+
+    @Test
+    func navigateWithDisallowedNestingPushesScreenNotYetInPath() {
+        let controller = RootNavigationController<Destination>(root: .one)
+
+        controller.navigate(to: .two, allowsSameScreenNesting: false)
+
+        #expect(controller.path == [.two].asNavigationElements())
+    }
+
+    @Test
+    func navigateWithAllowedNestingPushesScreen() {
+        let controller = RootNavigationController<Destination>(root: .one, path: [.two])
+
+        controller.navigate(to: .two, allowsSameScreenNesting: true)
+
+        #expect(controller.path == [.two, .two].asNavigationElements())
+    }
 }

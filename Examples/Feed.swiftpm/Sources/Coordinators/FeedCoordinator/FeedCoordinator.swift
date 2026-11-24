@@ -70,7 +70,7 @@ final class FeedCoordinator<ParentDestination: Hashable & CasePathable & FeedDes
     }
     
     func dismissAuthorDetail(model: AuthorDetailModel) {
-        controller.parent.popBefore(.feed(.authorDetail(model)))
+        controller.parent?.popBefore(.feed(.authorDetail(model)))
     }
 }
 
