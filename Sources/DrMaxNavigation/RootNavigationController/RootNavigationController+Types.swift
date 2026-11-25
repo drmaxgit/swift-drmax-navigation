@@ -31,5 +31,7 @@ public extension RootNavigationController {
         case index(controller: RootNavigationController, index: Array<Screen>.Index)
         /// The element was found as the root of a presented navigation tree.
         case root(parentController: RootNavigationController)
+        /// The element was found as the selection of a split navigation controller.
+        case selection(controller: SplitNavigationController<Screen>)
     }
 }

@@ -18,10 +18,12 @@ public final class PresentedNavigationController<Screen: Hashable>: RootNavigati
     /// Whether this presentation allows interactive dismissal (e.g., swiping down on a sheet).
     @_spi(Internal)
     public let allowsInteractiveDismiss: Bool
+    
+    public let root: NavigationElement<Screen>
 
     /// The complete path to use when searching for children.
     override var completePath: [NavigationElement<Screen>] {
-        [root].compactMap { $0 } + path + (presentation?.controller.completePath ?? [])
+        [root] + path + (presentation?.controller.completePath ?? [])
     }
 
     /// Creates a new presented navigation controller.
@@ -34,11 +36,7 @@ public final class PresentedNavigationController<Screen: Hashable>: RootNavigati
         allowsInteractiveDismiss: Bool
     ) {
         self.allowsInteractiveDismiss = allowsInteractiveDismiss
-
-        super.init(
-            root: root,
-            path: [],
-            rootSetWithAnimation: animated
-        )
+        self.root = NavigationElement(wrapped: root, wasNavigatedWithAnimation: animated)
+        super.init(path: [])
     }
 }
